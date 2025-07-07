@@ -90,7 +90,7 @@ app = FastAPI()
 # CORS 정책 강화: 신뢰할 수 있는 도메인만 허용
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # 실제 배포시에는 본인 도메인으로 변경
+    allow_origins=["https://gabeflower-account-book-red-smoke-4922.fly.dev"],  # 실제 배포시에는 본인 도메인으로 변경
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
