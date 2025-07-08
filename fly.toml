@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for gabeflower-account-book-red-smoke-4922 on 2025-07-07T22:23:33+09:00
+# fly.toml app configuration file generated for gabeflower-account-book on 2025-07-08T21:32:31+09:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'gabeflower-account-book-red-smoke-4922'
+app = 'gabeflower-account-book'
 primary_region = 'nrt'
 
 [build]
