@@ -37,7 +37,7 @@ function AddEntry() {
     if (!ledger) return;
     const fetchMenu = async () => {
       try {
-        const res = await fetch('/menu');
+        const res = await fetch('https://gabeflower-account-book.fly.dev/menu');
         if (!res.ok) {
           const text = await res.text();
           throw new Error(`API 오류: ${res.status} - ${text}`);
@@ -74,7 +74,7 @@ function AddEntry() {
     setLoading(true); setError(''); setLedger(null);
     try {
       // fetch: CORS 정책은 백엔드에서 허용 origin을 명확히 제한해야 안전합니다.
-      const res = await fetch(`/ledger/${nickname}`);
+      const res = await fetch(`https://gabeflower-account-book.fly.dev/ledger/${nickname}`);
       if (!res.ok) {
         let data; try { data = await res.json(); } catch { data = {}; }
         throw new Error(data.detail || '장부 조회 실패');
@@ -102,7 +102,7 @@ function AddEntry() {
     }
     try {
       if (!ledger) throw new Error('장부를 먼저 조회하세요.');
-      const res = await fetch('/entry', {
+      const res = await fetch('https://gabeflower-account-book.fly.dev/entry', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nickname: ledger.nickname,
@@ -119,7 +119,7 @@ function AddEntry() {
       setEntry({ date: '', menu: '', amount: '', note: '' });
       // 사용 금액 갱신
       // fetch: CORS 정책은 백엔드에서 허용 origin을 명확히 제한해야 안전합니다.
-      const refreshed = await fetch(`/ledger/${ledger.nickname}`);
+      const refreshed = await fetch(`https://gabeflower-account-book.fly.dev/ledger/${ledger.nickname}`);
       setLedger(await refreshed.json());
     } catch (err: any) {
       setAddError(err.message);
