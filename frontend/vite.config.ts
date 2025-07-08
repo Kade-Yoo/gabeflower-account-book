@@ -10,10 +10,10 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/menu': 'https://gabeflower-account-book-red-smoke-4922.fly.dev',
-      '/entry': 'https://gabeflower-account-book-red-smoke-4922.fly.dev',
-      '/ledger': 'https://gabeflower-account-book-red-smoke-4922.fly.dev',
-      '/user': 'https://gabeflower-account-book-red-smoke-4922.fly.dev',
+      '/menu': 'https://gabeflower-account-book.fly.dev',
+      '/entry': 'https://gabeflower-account-book.fly.dev',
+      '/ledger': 'https://gabeflower-account-book.fly.dev',
+      '/user': 'https://gabeflower-account-book.fly.dev',
     }
   }
 })
