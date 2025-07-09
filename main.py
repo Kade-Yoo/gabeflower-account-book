@@ -14,7 +14,6 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     nickname = Column(String, unique=True, index=True)
     total_amount = Column(Integer)
-    remain_amount = Column(Integer, default=0)
     start_date = Column(String)
     entries = relationship("Entry", back_populates="user")
 
@@ -122,7 +121,7 @@ def create_user(user: UserCreate):
     if db.query(User).filter_by(nickname=user.nickname).first():
         db.close()
         raise HTTPException(status_code=400, detail="이미 존재하는 닉네임입니다.")
-    db_user = User(nickname=user.nickname, total_amount=user.total_amount, remain_amount=user.total_amount, start_date=user.start_date)
+    db_user = User(nickname=user.nickname, total_amount=user.total_amount, start_date=user.start_date)
     db.add(db_user)
     db.commit()
     db.close()
@@ -137,7 +136,7 @@ def get_ledger(nickname: str):
         raise HTTPException(status_code=404, detail="사용자 없음")
     entries = db.query(Entry).filter_by(user_id=user.id).all()
     used_amount = sum(e.amount for e in entries)
-    remain_amount = user.remain_amount if hasattr(user, 'remain_amount') and user.remain_amount is not None else user.total_amount - used_amount
+    remain_amount = user.total_amount - used_amount
     result = {
         "nickname": user.nickname,
         "total_amount": user.total_amount,
@@ -202,13 +201,11 @@ def charge_ledger(nickname: str, req: ChargeRequest):
     if req.amount <= 0:
         db.close()
         raise HTTPException(status_code=400, detail="Amount must be positive")
-    setattr(user, 'total_amount', user.total_amount + req.amount)
-    if hasattr(user, 'remain_amount') and user.remain_amount is not None:
-        setattr(user, 'remain_amount', user.remain_amount + req.amount)
+    user.total_amount += req.amount
     db.commit()
     entries = db.query(Entry).filter_by(user_id=user.id).all()
     used_amount = sum(e.amount for e in entries)
-    remain_amount = user.remain_amount if hasattr(user, 'remain_amount') and user.remain_amount is not None else user.total_amount - used_amount
+    remain_amount = user.total_amount - used_amount
     result = {
         "nickname": user.nickname,
         "total_amount": user.total_amount,
