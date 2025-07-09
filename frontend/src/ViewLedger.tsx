@@ -24,6 +24,9 @@ function ViewLedger() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const [chargeAmount, setChargeAmount] = useState('');
+  const [chargeLoading, setChargeLoading] = useState(false);
+  const [chargeError, setChargeError] = useState('');
 
   const cardStyle = { textAlign: 'center' as const, margin: '40px auto', padding: '2.5rem 2rem', borderRadius: 24, boxShadow: '0 4px 24px rgba(0,0,0,0.08)', background: '#fff' };
 
@@ -45,6 +48,36 @@ function ViewLedger() {
     }
   };
 
+  const handleCharge = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setChargeError('');
+    if (!ledger) return;
+    const amount = Number(chargeAmount);
+    if (!amount || amount <= 0) {
+      setChargeError('금액은 0보다 큰 정수만 입력하세요.');
+      return;
+    }
+    setChargeLoading(true);
+    try {
+      const res = await fetch(`https://gabeflower-account-book.fly.dev/ledger/${ledger.nickname}/charge`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount }),
+      });
+      if (!res.ok) {
+        let data; try { data = await res.json(); } catch { data = {}; }
+        throw new Error(data.detail || '충전 실패');
+      }
+      const data = await res.json();
+      setLedger(data);
+      setChargeAmount('');
+    } catch (err: any) {
+      setChargeError(err.message);
+    } finally {
+      setChargeLoading(false);
+    }
+  };
+
   return (
     <div style={{ minHeight: '100vh', width: '100vw', background: 'rgb(245,246,250)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
       <div className="card-rounded" style={cardStyle}>
@@ -63,6 +96,23 @@ function ViewLedger() {
               <strong>총금액:</strong> {ledger.total_amount} <br />
               <strong>시작일:</strong> {ledger.start_date}
             </div>
+            {/* 금액 충전 UI */}
+            <form onSubmit={handleCharge} style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+              <input
+                type="number"
+                className="input-rounded"
+                placeholder="충전 금액"
+                value={chargeAmount}
+                onChange={e => setChargeAmount(e.target.value)}
+                min={1}
+                style={{ maxWidth: 140 }}
+                disabled={chargeLoading}
+              />
+              <button type="submit" className="btn-main" style={{ width: 100, minWidth: 80 }} disabled={chargeLoading}>
+                {chargeLoading ? '충전 중...' : '충전'}
+              </button>
+            </form>
+            {chargeError && <div className="text-error" style={{ marginBottom: 8 }}>{chargeError}</div>}
             {/* 사용 내역 요약 */}
             {(() => {
               const entries = ledger.entries;
