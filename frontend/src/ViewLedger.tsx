@@ -97,7 +97,7 @@ function ViewLedger() {
               <strong>시작일:</strong> {ledger.start_date}
             </div>
             {/* 금액 충전 UI */}
-            <form onSubmit={handleCharge} style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+            <form onSubmit={handleCharge} style={{ display: 'flex', flexDirection: 'row', gap: 8, alignItems: 'center', justifyContent: 'center', marginBottom: 16, width: '100%', maxWidth: 340, marginLeft: 'auto', marginRight: 'auto' }}>
               <input
                 type="number"
                 className="input-rounded"
@@ -105,10 +105,10 @@ function ViewLedger() {
                 value={chargeAmount}
                 onChange={e => setChargeAmount(e.target.value)}
                 min={1}
-                style={{ maxWidth: 140 }}
+                style={{ maxWidth: 140, height: 56, marginBottom: 0 }}
                 disabled={chargeLoading}
               />
-              <button type="submit" className="btn-main" style={{ width: 100, minWidth: 80 }} disabled={chargeLoading}>
+              <button type="submit" className="btn-main" style={{ width: 100, minWidth: 80, height: 56, marginBottom: 0, padding: 0 }} disabled={chargeLoading}>
                 {chargeLoading ? '충전 중...' : '충전'}
               </button>
             </form>
