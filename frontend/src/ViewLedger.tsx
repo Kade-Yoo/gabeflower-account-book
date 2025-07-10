@@ -121,10 +121,13 @@ function ViewLedger() {
               const menuCount: Record<string, number> = {};
               entries.forEach(e => { menuCount[e.menu] = (menuCount[e.menu] || 0) + 1; });
               const mostMenu = Object.entries(menuCount).sort((a, b) => b[1] - a[1])[0]?.[0] || '-';
+              // 총 사용 금액과 남은 금액 계산
+              const usedAmount = entries.reduce((sum, e) => sum + e.amount, 0);
+              const remainAmount = ledger.total_amount - usedAmount;
               return (
                 <div style={{ marginBottom: 18, background: '#f6f8fa', borderRadius: 12, padding: '1rem 1.2rem', fontSize: '1.05rem', color: '#22223b', boxShadow: '0 1px 4px rgba(100,108,255,0.04)' }}>
                   <span style={{ fontWeight: 600 }}>{days.length}일</span> 동안, <span style={{ fontWeight: 600 }}>{entries.length}번</span> <br />
-                  <span style={{ color: '#646cff', fontWeight: 700 }}>{ledger.used_amount.toLocaleString()}원</span> 사용했고 <br />
+                  <span style={{ color: '#646cff', fontWeight: 700 }}>{usedAmount.toLocaleString()}원</span> 사용했고 <br />
                   가장 많이 먹은 메뉴는 <span style={{ fontWeight: 700, color: '#4b53c3' }}>{mostMenu}</span> 입니다.
                 </div>
               );
@@ -140,10 +143,17 @@ function ViewLedger() {
                 </li>
               ))}
             </ul>
-            <div style={{ marginTop: 16 }} className="text-body">
-              <strong>총 사용 금액:</strong> {ledger.used_amount}원<br />
-              <strong>남은 금액:</strong> {ledger.remain_amount}원
-            </div>
+            {/* 총 사용 금액, 남은 금액을 직접 계산해서 표시 */}
+            {(() => {
+              const usedAmount = ledger.entries.reduce((sum, e) => sum + e.amount, 0);
+              const remainAmount = ledger.total_amount - usedAmount;
+              return (
+                <div style={{ marginTop: 16 }} className="text-body">
+                  <strong>총 사용 금액:</strong> {usedAmount}원<br />
+                  <strong>남은 금액:</strong> {remainAmount}원
+                </div>
+              );
+            })()}
           </div>
         )}
       </div>
