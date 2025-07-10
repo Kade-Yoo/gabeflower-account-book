@@ -143,7 +143,7 @@ function AddEntry() {
           <>
             <div className="text-body" style={{ marginBottom: 18 }}>
               <strong>총 사용 금액:</strong> {ledger.used_amount}원<br />
-              <strong>남은 금액:</strong> {ledger.remain_amount}원
+              <strong>남은 금액:</strong> {(ledger.total_amount - ledger.used_amount)}원
             </div>
             <form onSubmit={handleAddEntry} style={{ display: 'flex', flexDirection: 'column', gap: 0, marginBottom: 18 }}>
               <DatePicker
