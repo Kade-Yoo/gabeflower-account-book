@@ -30,11 +30,12 @@ function ViewLedger() {
 
   const cardStyle = { textAlign: 'center' as const, margin: '40px auto', padding: '2.5rem 2rem', borderRadius: 24, boxShadow: '0 4px 24px rgba(0,0,0,0.08)', background: '#fff' };
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const handleSearch = async (nickname: string) => {
     setLoading(true); setError(''); setLedger(null);
     try {
-      // fetch: CORS 정책은 백엔드에서 허용 origin을 명확히 제한해야 안전합니다.
-      const res = await fetch(`https://gabeflower-account-book.fly.dev/ledger/${nickname}`);
+      const res = await fetch(`${API_URL}/ledger/${nickname}`);
       if (!res.ok) {
         let data; try { data = await res.json(); } catch { data = {}; }
         throw new Error(data.detail || '장부 조회 실패');
@@ -59,7 +60,7 @@ function ViewLedger() {
     }
     setChargeLoading(true);
     try {
-      const res = await fetch(`https://gabeflower-account-book.fly.dev/ledger/${ledger.nickname}/charge`, {
+      const res = await fetch(`${API_URL}/ledger/${ledger.nickname}/charge`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount }),

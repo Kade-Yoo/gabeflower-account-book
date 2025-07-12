@@ -29,6 +29,8 @@ function AddLedger() {
     return /^\d+$/.test(amount) && Number(amount) > 0;
   };
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -42,8 +44,7 @@ function AddLedger() {
     }
     setLoading(true);
     try {
-      // fetch: CORS 정책은 백엔드에서 허용 origin을 명확히 제한해야 안전합니다.
-      const res = await fetch('https://gabeflower-account-book.fly.dev/user', {
+      const res = await fetch(`${API_URL}/user`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

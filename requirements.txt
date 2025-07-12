@@ -3,3 +3,5 @@ uvicorn==0.23.2
 sqlalchemy
 pydantic
 fastapi-helmet 
+psycopg2-binary
+python-dotenv 

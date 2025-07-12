@@ -25,6 +25,7 @@ function AddEntry() {
   const [menuOptions, setMenuOptions] = useState<any[]>([]);
   const [menuMap, setMenuMap] = useState<Record<string, { price: number; category: string }>>({});
   const [date, setDate] = useState<Date | null>(null);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const inputStyle = {
     background: '#f6f8fa', border: 'none', borderRadius: 16, padding: '1.1rem', fontSize: '1.1rem', marginBottom: 18, width: '100%', color: '#22223b', fontWeight: 500, outline: 'none', boxSizing: 'border-box' as const
@@ -37,7 +38,7 @@ function AddEntry() {
     if (!ledger) return;
     const fetchMenu = async () => {
       try {
-        const res = await fetch('https://gabeflower-account-book.fly.dev/menu');
+        const res = await fetch(`${API_URL}/menu`);
         if (!res.ok) {
           const text = await res.text();
           throw new Error(`API 오류: ${res.status} - ${text}`);
@@ -73,8 +74,7 @@ function AddEntry() {
   const handleSearch = async (nickname: string) => {
     setLoading(true); setError(''); setLedger(null);
     try {
-      // fetch: CORS 정책은 백엔드에서 허용 origin을 명확히 제한해야 안전합니다.
-      const res = await fetch(`https://gabeflower-account-book.fly.dev/ledger/${nickname}`);
+      const res = await fetch(`${API_URL}/ledger/${nickname}`);
       if (!res.ok) {
         let data; try { data = await res.json(); } catch { data = {}; }
         throw new Error(data.detail || '장부 조회 실패');
@@ -102,7 +102,7 @@ function AddEntry() {
     }
     try {
       if (!ledger) throw new Error('장부를 먼저 조회하세요.');
-      const res = await fetch('https://gabeflower-account-book.fly.dev/entry', {
+      const res = await fetch(`${API_URL}/entry`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nickname: ledger.nickname,
@@ -118,8 +118,7 @@ function AddEntry() {
       }
       setEntry({ date: '', menu: '', amount: '', note: '' });
       // 사용 금액 갱신
-      // fetch: CORS 정책은 백엔드에서 허용 origin을 명확히 제한해야 안전합니다.
-      const refreshed = await fetch(`https://gabeflower-account-book.fly.dev/ledger/${ledger.nickname}`);
+      const refreshed = await fetch(`${API_URL}/ledger/${ledger.nickname}`);
       setLedger(await refreshed.json());
     } catch (err: any) {
       setAddError(err.message);

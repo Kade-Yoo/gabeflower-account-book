@@ -3,9 +3,19 @@ from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+import os
 
-DATABASE_URL = "sqlite:///./accountbook.db"
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+# .env 파일에서 환경변수 로드
+env = os.getenv("ENV", "production")
+
+if env == "production":
+    load_dotenv(".env.production")
+else:
+    load_dotenv(".env.development")
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
 
@@ -90,7 +100,7 @@ app = FastAPI()
 # CORS 정책 강화: 신뢰할 수 있는 도메인만 허용
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://gabeflower-account-book.vercel.app"],  # 실제 배포시에는 본인 도메인으로 변경
+    allow_origins=["*"],  # 실제 배포시에는 본인 도메인으로 변경
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
