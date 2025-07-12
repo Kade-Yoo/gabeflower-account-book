@@ -28,9 +28,8 @@ function NicknameSearch({ onSearch, loading, label }: NicknameSearchProps) {
         value={selected}
         onChange={e => setSelected(e.target.value)}
         required
-        style={{
-          background: '#f6f8fa', border: 'none', borderRadius: 16, padding: '1.1rem', fontSize: '1.1rem', marginBottom: 12, width: '100%', color: '#22223b', fontWeight: 500, outline: 'none', boxSizing: 'border-box'
-        }}
+        className="input-rounded"
+        style={{ height: 56, marginBottom: 18, fontSize: '1.1rem', fontWeight: 500, color: '#22223b', background: '#f6f8fa', border: 'none', borderRadius: 16, padding: '1.1rem', width: '100%', outline: 'none', boxSizing: 'border-box' }}
       >
         <option value="">닉네임 선택</option>
         {nicknames.map(nick => (
