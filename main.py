@@ -229,3 +229,10 @@ def charge_ledger(nickname: str, req: ChargeRequest):
     }
     db.close()
     return result 
+
+@app.get("/users/nicknames")
+def get_nicknames():
+    db = SessionLocal()
+    nicknames = [user.nickname for user in db.query(User).all()]
+    db.close()
+    return {"nicknames": nicknames} 
